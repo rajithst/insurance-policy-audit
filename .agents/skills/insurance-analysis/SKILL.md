@@ -1,20 +1,22 @@
 ---
 name: insurance-analysis
 description: >-
-  Run the full insurance contract analysis workflow or the market comparison
-  benchmarking analysis. Use this skill when the user asks to analyze their
-  insurance contract, run the insurance workflow, check their coverage, map
-  their contract to the policy booklets, or compare their insurance against
-  competitors. Triggers on: "run insurance analysis", "analyze my contract",
+  Run the full insurance contract analysis workflow, market comparison
+  benchmarking analysis, or the policy options catalog report. Use this skill
+  when the user asks to analyze their insurance contract, run the insurance
+  workflow, check their coverage, map their contract to policy booklets,
+  compare their insurance against competitors, or explore all available policy
+  options and riders. Triggers on: "run insurance analysis", "analyze my contract",
   "check my coverage", "run the workflow", "insurance reality check",
   "compare insurers", "market analysis", "find cheaper insurance",
   "benchmark my premium", "competitive quotes", "market comparison",
-  or any request to process the documents in the uploads folder.
+  "available options", "options report", "coverage catalog", "what options are available",
+  "available riders", or any request to process the documents in the uploads folder.
 ---
 
 # Insurance Contract Analysis Workflow
 
-Execute the full 3-agent insurance analysis pipeline as defined in the project's
+Execute the full insurance analysis pipeline as defined in the project's
 [workflow.md](../../workflow.md) and [AGENTS.md](../../AGENTS.md).
 
 Read both files completely before starting. They contain all the detailed instructions,
@@ -28,6 +30,7 @@ This workflow analyzes a Japanese auto insurance contract (保険証券) by:
 3. Tracing every coverage item to its legal definition, exclusions, and limits
 4. Producing a human-readable report with gaps, benefits, and recommendations
 5. *(Optional, on-demand)* Benchmarking the policy against 3 competitive insurers
+6. *(Optional, on-demand)* Generating a comprehensive catalog of all available coverages, riders (特約 1–32), and roadside perks
 
 ## Execution Steps
 
@@ -114,6 +117,32 @@ This workflow analyzes a Japanese auto insurance contract (保険証券) by:
    - Direct quote links for each competitor
    - Switching action plan summary
 
+### Step 7: Run Agent 5 — The Options & Catalog Analyst (Phase 6, Optional / On-Demand)
+
+> **This step runs ONLY when the user explicitly requests an options availability report.**
+> Trigger phrases: `/insurance-analysis options`, "options report", "what options are available",
+> "list all available options", "coverage catalog", "available riders".
+
+1. Confirm the policy booklet exists in `uploads/policy-booklets/`.
+2. Follow all instructions for **Agent 5** in [AGENTS.md](../../AGENTS.md).
+3. If `temp/baseline-contract.json` exists, load active coverages to compare against the full catalog.
+4. Scan the master Special Provisions table (*特約一覧*) in the policy booklet to extract all 32 riders, core coverages, deductible structures, and driver restrictions.
+5. Extract roadside assistance allowances and stranded travel support from the roadside terms.
+6. Categorize options into:
+   - Core Base Coverages (Liability, Injury, Hull General vs Limited)
+   - Master Rider Catalog (All 32 Special Provisions: Liability, Injury, Hull, Family/Lifestyle, Driver Scope, Telematics, Payment)
+   - Practical Recommendations ("Who Needs This?" personas: families, bicycles, pet owners, new car owners, EV/Hybrid owners)
+   - Roadside Assistance & Travel Support Features
+   - Deductible Configurations & Premium Discounts
+7. Tag each item with:
+   - `[CURRENTLY ACTIVE ✅]` (already attached to contract)
+   - `[AVAILABLE TO ADD ➕]` (optional add-on)
+   - `[AUTOMATICALLY INCLUDED 🔹]` (bundled mandatory clause)
+8. Write the output to:
+   - `reports/Available_Policy_Options_Report_EN.md` (English policy options catalog)
+   - `reports/Available_Policy_Options_Report_JA.md` (Japanese policy options catalog)
+9. Present a high-level summary to the user highlighting key add-ons they could consider.
+
 ## Error Handling
 
 - **No contract PDF found** → STOP, ask user to add it to `uploads/contracts/`.
@@ -122,3 +151,4 @@ This workflow analyzes a Japanese auto insurance contract (保険証券) by:
 - **Unmapped coverage items** → Continue but flag them prominently in the report.
 - **Market analysis requested but no baseline** → STOP, run the standard audit pipeline first.
 - **Insufficient competitor data** → Report as many competitors as viable, explain gaps.
+- **Options catalog requested without booklet** → STOP, ask user to upload the policy booklet PDF.

@@ -208,6 +208,37 @@ Before any agent runs, verify the environment is ready.
 
 ---
 
+### Phase 6: On-Demand Policy Options & Endorsement Cataloging
+
+**Agent:** `The Options & Catalog Analyst`  
+**Input:** Matched policy booklet(s) in `uploads/policy-booklets/`, roadside terms in `uploads/roadside-terms/`, and optional contract baseline in `temp/baseline-contract.json`  
+**Output:**
+- `reports/Available_Policy_Options_Report_EN.md`
+- `reports/Available_Policy_Options_Report_JA.md`
+
+> **Note:** Phase 6 is **on-demand**. It runs when the user explicitly requests an options availability report via `/insurance-analysis options` (or phrases like *"what options are available"*, *"list all available options"*, *"coverage catalog"*).
+
+**Execution Steps:**
+
+1. **Verify Documents:** Confirm the matched policy booklet exists. If `temp/baseline-contract.json` exists, load active coverages to compare against the full catalog.
+2. **Scan Master Special Provisions Table (<特約一覧>):** Extract all numbered riders (特約 1 to 32), their formal definitions, and page citations.
+3. **Scan Core & Roadside Features:** Extract limits, scope choices, deductibles, age conditions, driver scopes, and roadside support allowances.
+4. **Cross-Reference Active vs. Available:**
+   - Mark items present on contract as `[CURRENTLY ACTIVE ✅]`.
+   - Mark items that can be attached as `[AVAILABLE TO ADD ➕]`.
+   - Mark mandatory standard clauses as `[AUTOMATICALLY INCLUDED 🔹]`.
+5. **Synthesize Recommendations ("Who Needs This?"):** Break down specific target personas (families, bicycles, pet owners, new car owners, EV/Hybrid owners).
+6. **Generate Reports:** Write dual-language reports (`Available_Policy_Options_Report_EN.md` and `JA`).
+
+**Validation Checkpoint:**
+- [ ] All numbered riders from the booklet are extracted and cataloged.
+- [ ] Page and article citations are exact.
+- [ ] Active vs available status clearly matches `temp/baseline-contract.json`.
+- [ ] Practical recommendations and deductible structures are explained.
+- [ ] Both EN and JA reports exist.
+
+---
+
 ## Workflow Diagram
 
 ```
@@ -229,25 +260,19 @@ Phase 0                Phase 1                    Phase 2                       
    files missing      no inception date          no booklet matches            items unmapped
 
 
-Phase 5 (Optional / On-Demand — triggered independently)
+Phase 5 (On-Demand — "/insurance-analysis market analysis")
 ┌──────────────────────────────────────────────────────────────────────────────────┐
 │  Market Analyst                                                                  │
-│                                                                                  │
-│  baseline-contract.json + audit report                                           │
-│      ↓                                                                           │
-│  Build search profile → market-search-profile.json                               │
-│      ↓                                                                           │
-│  Web search: comparison portals + insurer sites                                  │
-│      ↓                                                                           │
-│  Select top 3 competitors                                                        │
-│      ↓                                                                           │
-│  Deep comparison analysis (coverage, premium, roadside, switching)               │
-│      ↓                                                                           │
-│  Market_Comparison_Report_EN.md + Market_Comparison_Report_JA.md                 │
+│  baseline-contract.json → Kakaku / Portals → Top 3 Competitors Benchmark         │
+│  Outputs: Market_Comparison_Report_EN.md & JA                                    │
 └──────────────────────────────────────────────────────────────────────────────────┘
-     │
-   STOP if
-   baseline missing
+
+Phase 6 (On-Demand — "/insurance-analysis options")
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  Options & Catalog Analyst                                                       │
+│  matched booklets + baseline-contract.json → Master 特約 1-32 + Roadside Perks   │
+│  Outputs: Available_Policy_Options_Report_EN.md & JA                             │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -259,10 +284,12 @@ Phase 5 (Optional / On-Demand — triggered independently)
 | Contract PDF | User (pre-uploaded) | Agent 1 | `uploads/contracts/` |
 | Policy Booklet PDFs | User (pre-uploaded) | Agent 2 | `uploads/policy-booklets/` |
 | Roadside Terms PDFs | User (pre-uploaded) | Agent 2 | `uploads/roadside-terms/` |
-| `baseline-contract.json` | Agent 1 | Agent 2, Agent 3, Agent 4 | `temp/` |
+| `temp/baseline-contract.json` | Agent 1 | Agent 2, Agent 3, Agent 4, Agent 5 | `temp/` |
 | `traced-clauses.md` | Agent 2 | Agent 3 | `temp/` |
 | `market-search-profile.json` | Agent 4 | (internal reference) | `temp/` |
 | `Policy_Coverage_Audit_Report_EN.md` | Agent 3 | User, Agent 4 | `reports/` |
 | `Policy_Coverage_Audit_Report_JA.md` | Agent 3 | User | `reports/` |
 | `Market_Comparison_Report_EN.md` | Agent 4 | User | `reports/` |
 | `Market_Comparison_Report_JA.md` | Agent 4 | User | `reports/` |
+| `Available_Policy_Options_Report_EN.md` | Agent 5 | User | `reports/` |
+| `Available_Policy_Options_Report_JA.md` | Agent 5 | User | `reports/` |
