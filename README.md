@@ -2,7 +2,7 @@
 ### AI-Powered Forensic Contract Audit & Market Benchmarking for Japanese Auto Insurance
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Multi-Agent Swarm](https://img.shields.io/badge/Architecture-5--Agent%20Swarm-purple.svg)](./AGENTS.md)
+[![Multi-Agent Swarm](https://img.shields.io/badge/Architecture-6--Agent%20Swarm-purple.svg)](./AGENTS.md)
 [![Workflow](https://img.shields.io/badge/Workflow-Deterministic%20Pipeline-green.svg)](./workflow.md)
 [![Language](https://img.shields.io/badge/Reports-Dual%20Language%20(EN%20%7C%20JA)-orange.svg)](./example-docs/)
 [![Sample Reports](https://img.shields.io/badge/Examples-Sanitized%20Reports-blueviolet.svg)](./example-docs/)
@@ -22,6 +22,7 @@ This autonomous multi-agent swarm:
 4. **Synthesizes dual-language audit reports (EN & JA)** highlighting critical danger zones (🔴🟡🟢) and usable perks.
 5. **Benchmarks your policy on-demand** against top Japanese direct-sales competitors (apples-to-apples configuration).
 6. **Catalogs all available policy options on-demand** (all 32 special provisions / 特約, roadside allowances, deductibles, discounts, and "Who Needs What?" recommendations).
+7. **Architects balanced, custom insurance plans on-demand** (interactive profiling, risk-gap resolution, and best-possible actuarial premium estimation).
 
 > 💡 **Provider-Agnostic Design:** Works with **any Japanese insurer** (Mitsui Direct, Sony Sompo, SBI Sompo, Zurich, AXA Direct, Tokio Marine Nichido, Sompo Japan, Mitsui Sumitomo, Saison, etc.).
 
@@ -29,7 +30,7 @@ This autonomous multi-agent swarm:
 
 ## 🏗️ Swarm Architecture
 
-The system consists of **5 specialized AI agents** operating in sequential and on-demand phases:
+The system consists of **6 specialized AI agents** operating in sequential and on-demand phases:
 
 ```mermaid
 flowchart TD
@@ -82,9 +83,19 @@ flowchart TD
         A5 --> OPT_JA[reports/Available_Policy_Options_Report_JA.md]
     end
 
+    subgraph Phase7 [Phase 7: On-Demand Balanced Plan Architecture]
+        A6[Agent 6: The Plan Architect]
+        JSON1 -.-> A6
+        B1 -.-> A6
+        A6 --> PROF2[temp/plan-user-profile.json]
+        A6 --> PLAN_EN[reports/Balanced_Insurance_Plan_Report_EN.md]
+        A6 --> PLAN_JA[reports/Balanced_Insurance_Plan_Report_JA.md]
+    end
+
     Phase0 --> Phase1 --> Phase2 --> Phase3 --> Phase4
     User -.->|"/insurance-analysis market analysis"| Phase5
     User -.->|"/insurance-analysis options"| Phase6
+    User -.->|"/insurance-analysis plan"| Phase7
 ```
 
 ### Agent Roles & Deliverables
@@ -96,6 +107,7 @@ flowchart TD
 | **Agent 3: Gap Synthesizer** | Risk Advisor & Synthesizer | `baseline-contract.json` + `traced-clauses.md` | `reports/Policy_Coverage_Audit_Report_EN.md`<br>`reports/Policy_Coverage_Audit_Report_JA.md` | Produces executive audit reports featuring Danger Zones (🔴🟡🟢), 4-column roadside tables, and powertrain submersion risks. |
 | **Agent 4: Market Analyst** | Competitive Benchmarking *(On-Demand)* | `baseline-contract.json` | `temp/market-search-profile.json`<br>`reports/Market_Comparison_Report_EN.md`<br>`reports/Market_Comparison_Report_JA.md` | Benchmarks your exact profile against the top 3 competitors for identical coverage parity, estimated premiums, and roadside differences. |
 | **Agent 5: Options Analyst** | Policy Options & Rider Cataloger *(On-Demand)* | `baseline-contract.json` + `uploads/` | `reports/Available_Policy_Options_Report_EN.md`<br>`reports/Available_Policy_Options_Report_JA.md` | Compiles an exhaustive, easy-to-understand catalog of all available coverages, 32 special provisions (特約), roadside allowances, deductible options, and "Who Needs What?" recommendations. |
+| **Agent 6: Plan Architect** | Custom Balanced Plan Advisor *(On-Demand)* | `baseline-contract.json` + `uploads/` + questionnaire | `temp/plan-user-profile.json`<br>`reports/Balanced_Insurance_Plan_Report_EN.md`<br>`reports/Balanced_Insurance_Plan_Report_JA.md` | Interactively assesses risk preferences, solves critical gaps (e.g. hybrid submersion), compares 3 tailored tiers, and calculates granular premium estimates. |
 
 ---
 
@@ -114,14 +126,17 @@ insurance-agent/
 ├── temp/                             ← Intermediate machine-readable working files (git-ignored)
 │   ├── baseline-contract.json        ← Structured extraction from contract
 │   ├── traced-clauses.md             ← Forensic clause mappings with page numbers
-│   └── market-search-profile.json    ← Search parameters for market benchmarking
+│   ├── market-search-profile.json    ← Search parameters for market benchmarking
+│   └── plan-user-profile.json        ← Diagnostic questionnaire responses
 ├── reports/                          ← Final human-readable audit & comparison reports (local/git-ignored)
 │   ├── Policy_Coverage_Audit_Report_EN.md
 │   ├── Policy_Coverage_Audit_Report_JA.md
 │   ├── Market_Comparison_Report_EN.md
 │   ├── Market_Comparison_Report_JA.md
 │   ├── Available_Policy_Options_Report_EN.md
-│   └── Available_Policy_Options_Report_JA.md
+│   ├── Available_Policy_Options_Report_JA.md
+│   ├── Balanced_Insurance_Plan_Report_EN.md
+│   └── Balanced_Insurance_Plan_Report_JA.md
 ├── example-docs/                     ← Sanitized production-grade sample deliverables (tracked)
 │   ├── Sample_Policy_Coverage_Audit_Report_EN.md
 │   ├── Sample_Policy_Coverage_Audit_Report_JA.md
@@ -129,6 +144,8 @@ insurance-agent/
 │   ├── Sample_Market_Comparison_Report_JA.md
 │   ├── Sample_Available_Policy_Options_Report_EN.md
 │   ├── Sample_Available_Policy_Options_Report_JA.md
+│   ├── Sample_Balanced_Insurance_Plan_Report_EN.md
+│   ├── Sample_Balanced_Insurance_Plan_Report_JA.md
 │   └── README.md
 ├── AGENTS.md                         ← Core swarm system prompts & agent instructions
 ├── workflow.md                       ← Step-by-step orchestrator execution pipeline
@@ -258,6 +275,34 @@ Generate an exhaustive, plain-language catalog of every available policy option,
 * 🏷️ **Status Flags:** Clear tagging for every item: **[ACTIVE ✅]**, **[AVAILABLE TO ADD ➕]**, or **[MANDATORY BUNDLED 🔹]**.
 * 🎯 **"Who Needs What?" Recommendation Matrix:** Persona-based guides for Families with Kids, High-Tech Hybrid/EV Owners, Bicycle Commuters, Road-Trippers, and Budget Optimizers.
 * 📝 **Step-by-Step Mid-Term Addition Guide:** Exact click-by-click instructions for modifying or adding endorsements mid-term via the insurer's Customer My Page.
+
+---
+
+### Command 4: Create an Optimized Balanced Insurance Plan
+
+Conduct an interactive risk and lifestyle diagnostic to generate a tailored, multi-tier insurance plan recommendation (Balanced, Budget Guard, and Full Cover) with transparent, actuarial premium estimates anchored to your existing contract:
+
+```text
+/insurance-analysis plan
+```
+
+*Alternative natural language triggers:*
+- *"create balanced plan"*
+- *"recommend insurance plan"*
+- *"custom insurance plan"*
+- *"build balanced policy"*
+- *"create plan for me"*
+- *"optimize my insurance"*
+
+#### What You Get:
+* 📄 Generated in `reports/`:
+  - [`Balanced_Insurance_Plan_Report_EN.md`](./reports/Balanced_Insurance_Plan_Report_EN.md) (Comprehensive English Balanced Plan Report)
+  - [`Balanced_Insurance_Plan_Report_JA.md`](./reports/Balanced_Insurance_Plan_Report_JA.md) (Comprehensive Japanese Balanced Plan Report)
+* 🌟 **View Sample Output:** [`example-docs/Sample_Balanced_Insurance_Plan_Report_EN.md`](./example-docs/Sample_Balanced_Insurance_Plan_Report_EN.md) | [`JA`](./example-docs/Sample_Balanced_Insurance_Plan_Report_JA.md)
+* 🎯 **The Optimal Sweet Spot (Plan A):** Solves catastrophic risk gaps (e.g. ¥3.8M hybrid battery submersion, bicycle liability) by combining **Limited Vehicle Hull (限定タイプ)** with a pragmatic **¥50,000 / ¥100,000 deductible**, saving ~55% compared to full comprehensive while keeping monthly cost increases under ~¥2,000/month.
+* 📊 **Master 3-Tier Comparison Table:** Side-by-side comparison of your Current Contract vs. Recommended Balanced Plan vs. Budget Guard vs. Comprehensive Full Cover.
+* 🧮 **Granular Actuarial Cost Breakdown:** Transparent line-item math showing exact additions, deductible discounts, and net monthly/annual costs.
+* 📝 **Mid-Term Online Modification Guide:** Step-by-step instructions for adding the recommended options mid-term via your insurer's Customer My Page without cancellation penalties.
 
 ---
 

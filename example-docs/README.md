@@ -16,6 +16,8 @@ These reports demonstrate the exact output formats, granular clause citations, d
 | [`Sample_Market_Comparison_Report_JA.md`](./Sample_Market_Comparison_Report_JA.md) | 🇯🇵 Japanese | Agent 4 (Market Analyst) | Japanese edition of the market benchmarking analysis (*自動車保険 市場比較・ベンチマーク分析レポート*), detailing premium differences, roadside assistance packages, and NCD grade switching plans. |
 | [`Sample_Available_Policy_Options_Report_EN.md`](./Sample_Available_Policy_Options_Report_EN.md) | 🇬🇧 English | Agent 5 (Options Analyst) | Comprehensive catalog of all available policy options, core coverages, riders (特約 1–32), roadside tiers, deductible options, and "Who Needs What?" buyer recommendations. |
 | [`Sample_Available_Policy_Options_Report_JA.md`](./Sample_Available_Policy_Options_Report_JA.md) | 🇯🇵 Japanese | Agent 5 (Options Analyst) | Japanese edition of the available options catalog (*付帯可能特約・補償オプション一覧カタログ*), covering all 32 endorsements, exact booklet page citations, and mid-term addition instructions. |
+| [`Sample_Balanced_Insurance_Plan_Report_EN.md`](./Sample_Balanced_Insurance_Plan_Report_EN.md) | 🇬🇧 English | Agent 6 (Plan Architect) | Personalized balanced insurance plan recommendation report. Evaluates diagnostic preferences, compares 3 tailored tiers (Balanced, Budget, Full Cover), and provides transparent actuarial cost breakdowns. |
+| [`Sample_Balanced_Insurance_Plan_Report_JA.md`](./Sample_Balanced_Insurance_Plan_Report_JA.md) | 🇯🇵 Japanese | Agent 6 (Plan Architect) | Japanese edition of the personalized balanced plan report (*自動車保険 最適バランス設計プラン・保険料試算レポート*), featuring hybrid flood risk resolution, 3-plan comparison, and My Page mid-term addition steps. |
 
 ---
 

@@ -239,6 +239,46 @@ Before any agent runs, verify the environment is ready.
 
 ---
 
+### Phase 7: On-Demand Balanced Insurance Plan Architecture
+
+**Agent:** `The Plan Architect`  
+**Input:** `temp/baseline-contract.json`, matched booklets in `uploads/policy-booklets/`, roadside terms in `uploads/roadside-terms/`, and policyholder responses to the diagnostic questionnaire  
+**Output:**
+- `temp/plan-user-profile.json`
+- `reports/Balanced_Insurance_Plan_Report_EN.md`
+- `reports/Balanced_Insurance_Plan_Report_JA.md`
+
+> **Note:** Phase 7 is **on-demand**. It runs when the user explicitly requests an optimized insurance plan via `/insurance-analysis plan` (or phrases like *"create balanced plan"*, *"recommend insurance plan"*, *"customize insurance"*).
+
+**Execution Steps:**
+
+1. **Verify Baseline & Booklets:** Confirm `temp/baseline-contract.json` and matched policy booklets exist.
+2. **Interactive Profiling (Diagnostic Questionnaire):**
+   - Check if user answers were provided in the prompt or saved in `temp/plan-user-profile.json`.
+   - If not, prompt the policyholder with the 5 core diagnostic questions (Vehicle Hull preference, Deductible tolerance, Driver scope, Family/lifestyle risks like bicycle liability, and Rental car necessity).
+   - Write structured responses to `temp/plan-user-profile.json`.
+3. **Risk-Gap & Powertrain Assessment:**
+   - Synthesize unmitigated vulnerabilities from Phase 3 (e.g. Hybrid traction battery submersion risk, lack of vehicle hull, bicycle liability).
+4. **Three-Tier Policy Architecture:**
+   - Design **Plan A (Recommended Balanced Plan)** targeting optimal protection for critical risks without premium bloating.
+   - Design **Plan B (Smart Budget Guard)** for strict cost minimization.
+   - Design **Plan C (Comprehensive Full Cover)** for absolute peace of mind.
+5. **Actuarial Premium Estimation Engine:**
+   - Anchor calculations to `policy.annual_premium`.
+   - Calculate granular, line-item adjustments using calibrated direct insurer tariff rates.
+   - Project annual and monthly cost spreads (+¥X/year and +¥Y/month).
+6. **Generate Dual-Language Reports:**
+   - Write `reports/Balanced_Insurance_Plan_Report_EN.md` and `JA` with 3-tier master comparison table, actuarial breakdowns, booklet citations, and step-by-step My Page instructions.
+
+**Validation Checkpoint:**
+- [ ] `temp/plan-user-profile.json` exists and matches questionnaire answers.
+- [ ] Three distinct tiers (Balanced, Budget, Full Cover) are fully specified.
+- [ ] Premium calculations are mathematically consistent and anchored to baseline.
+- [ ] Every recommended rider includes exact booklet page and article citations.
+- [ ] Both English and Japanese plan reports exist.
+
+---
+
 ## Workflow Diagram
 
 ```
@@ -273,6 +313,13 @@ Phase 6 (On-Demand — "/insurance-analysis options")
 │  matched booklets + baseline-contract.json → Master 特約 1-32 + Roadside Perks   │
 │  Outputs: Available_Policy_Options_Report_EN.md & JA                             │
 └──────────────────────────────────────────────────────────────────────────────────┘
+
+Phase 7 (On-Demand — "/insurance-analysis plan")
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  The Plan Architect                                                              │
+│  baseline + questionnaire → 3-Tier Optimization + Actuarial Premium Estimates    │
+│  Outputs: plan-user-profile.json, Balanced_Insurance_Plan_Report_EN.md & JA      │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -282,14 +329,17 @@ Phase 6 (On-Demand — "/insurance-analysis options")
 | File | Created By | Consumed By | Location |
 |---|---|---|---|
 | Contract PDF | User (pre-uploaded) | Agent 1 | `uploads/contracts/` |
-| Policy Booklet PDFs | User (pre-uploaded) | Agent 2 | `uploads/policy-booklets/` |
-| Roadside Terms PDFs | User (pre-uploaded) | Agent 2 | `uploads/roadside-terms/` |
-| `temp/baseline-contract.json` | Agent 1 | Agent 2, Agent 3, Agent 4, Agent 5 | `temp/` |
+| Policy Booklet PDFs | User (pre-uploaded) | Agent 2, Agent 5, Agent 6 | `uploads/policy-booklets/` |
+| Roadside Terms PDFs | User (pre-uploaded) | Agent 2, Agent 5, Agent 6 | `uploads/roadside-terms/` |
+| `temp/baseline-contract.json` | Agent 1 | Agent 2, Agent 3, Agent 4, Agent 5, Agent 6 | `temp/` |
 | `traced-clauses.md` | Agent 2 | Agent 3 | `temp/` |
 | `market-search-profile.json` | Agent 4 | (internal reference) | `temp/` |
-| `Policy_Coverage_Audit_Report_EN.md` | Agent 3 | User, Agent 4 | `reports/` |
+| `plan-user-profile.json` | Agent 6 | Agent 6 | `temp/` |
+| `Policy_Coverage_Audit_Report_EN.md` | Agent 3 | User, Agent 4, Agent 6 | `reports/` |
 | `Policy_Coverage_Audit_Report_JA.md` | Agent 3 | User | `reports/` |
 | `Market_Comparison_Report_EN.md` | Agent 4 | User | `reports/` |
 | `Market_Comparison_Report_JA.md` | Agent 4 | User | `reports/` |
-| `Available_Policy_Options_Report_EN.md` | Agent 5 | User | `reports/` |
+| `Available_Policy_Options_Report_EN.md` | Agent 5 | User, Agent 6 | `reports/` |
 | `Available_Policy_Options_Report_JA.md` | Agent 5 | User | `reports/` |
+| `Balanced_Insurance_Plan_Report_EN.md` | Agent 6 | User | `reports/` |
+| `Balanced_Insurance_Plan_Report_JA.md` | Agent 6 | User | `reports/` |

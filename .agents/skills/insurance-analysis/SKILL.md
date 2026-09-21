@@ -2,16 +2,17 @@
 name: insurance-analysis
 description: >-
   Run the full insurance contract analysis workflow, market comparison
-  benchmarking analysis, or the policy options catalog report. Use this skill
-  when the user asks to analyze their insurance contract, run the insurance
+  benchmarking analysis, policy options catalog report, or custom balanced plan architecture.
+  Use this skill when the user asks to analyze their insurance contract, run the insurance
   workflow, check their coverage, map their contract to policy booklets,
-  compare their insurance against competitors, or explore all available policy
-  options and riders. Triggers on: "run insurance analysis", "analyze my contract",
-  "check my coverage", "run the workflow", "insurance reality check",
+  compare their insurance against competitors, explore available policy
+  options, or design an optimized balanced insurance plan. Triggers on: "run insurance analysis",
+  "analyze my contract", "check my coverage", "run the workflow", "insurance reality check",
   "compare insurers", "market analysis", "find cheaper insurance",
   "benchmark my premium", "competitive quotes", "market comparison",
   "available options", "options report", "coverage catalog", "what options are available",
-  "available riders", or any request to process the documents in the uploads folder.
+  "available riders", "balanced plan", "recommend insurance plan", "create balanced plan",
+  "custom insurance plan", "build balanced policy", or any request to process the documents in the uploads folder.
 ---
 
 # Insurance Contract Analysis Workflow
@@ -31,6 +32,7 @@ This workflow analyzes a Japanese auto insurance contract (保険証券) by:
 4. Producing a human-readable report with gaps, benefits, and recommendations
 5. *(Optional, on-demand)* Benchmarking the policy against 3 competitive insurers
 6. *(Optional, on-demand)* Generating a comprehensive catalog of all available coverages, riders (特約 1–32), and roadside perks
+7. *(Optional, on-demand)* Conducting an interactive diagnostic to architect a balanced insurance plan with actuarial premium estimates
 
 ## Execution Steps
 
@@ -143,6 +145,39 @@ This workflow analyzes a Japanese auto insurance contract (保険証券) by:
    - `reports/Available_Policy_Options_Report_JA.md` (Japanese policy options catalog)
 9. Present a high-level summary to the user highlighting key add-ons they could consider.
 
+### Step 8: Run Agent 6 — The Plan Architect (Phase 7, Optional / On-Demand)
+
+> **This step runs ONLY when the user explicitly requests an optimized/balanced plan.**
+> Trigger phrases: `/insurance-analysis plan`, "balanced plan", "recommend insurance plan",
+> "create balanced plan", "custom insurance plan", "build balanced policy", "create plan for me".
+
+**Prerequisites:** `temp/baseline-contract.json` MUST exist. If it doesn't, run Steps 1–4 first.
+
+1. Confirm `temp/baseline-contract.json` exists.
+2. Follow all instructions for **Agent 6** in [AGENTS.md](../../AGENTS.md).
+3. **Conduct Interactive Profiling:**
+   - Review prompt context to check if the user has already answered the 5 diagnostic questions:
+     1. Vehicle Hull preference (Limited / Comprehensive / None)
+     2. Deductible tolerance (5-10万 / 10-10万 / 0-10万)
+     3. Driver scope (Policyholder only / Policyholder & spouse / Family)
+     4. Family/lifestyle risks (Bicycle liability / Moped scooter / Belongings)
+     5. Rental car replacement necessity (Yes ¥5,000/day / No)
+   - If not provided in the user's message, ask the user or construct a baseline profile, and write structured responses to `temp/plan-user-profile.json`.
+4. **Evaluate Vehicle & Risk Gaps:**
+   - Check vehicle specs (powertrain, value, age, rating class).
+   - Ground priorities in the critical vulnerabilities identified during Step 4 (e.g. Hybrid battery submersion, bicycle liability, zero-fault legal defence).
+5. **Architect Three Tailored Policy Tiers:**
+   - **Plan A (Recommended Balanced Plan):** Optimal sweet spot. Adds Limited Hull (¥3.8M) with 5-10万 deductible, retains Unlimited Bodily/Property Liability, Attorney Fees, and attaches Personal Liability.
+   - **Plan B (Smart Budget Guard):** Minimum premium protection.
+   - **Plan C (Complete Full Cover):** Maximum peace-of-mind with Comprehensive Hull (0-10万 deductible), Rental Car rider, and Personal Belongings.
+6. **Actuarial Cost Estimation:**
+   - Calculate line-item additions/subtractions anchored to `policy.annual_premium`.
+   - Provide net annual total and monthly equivalent cost deltas (+¥X/yr and +¥Y/mo).
+7. **Write the Output Reports:**
+   - `reports/Balanced_Insurance_Plan_Report_EN.md` (English balanced plan report)
+   - `reports/Balanced_Insurance_Plan_Report_JA.md` (Japanese balanced plan report)
+8. Present the executive summary and recommended plan to the user with actionable next steps.
+
 ## Error Handling
 
 - **No contract PDF found** → STOP, ask user to add it to `uploads/contracts/`.
@@ -152,3 +187,4 @@ This workflow analyzes a Japanese auto insurance contract (保険証券) by:
 - **Market analysis requested but no baseline** → STOP, run the standard audit pipeline first.
 - **Insufficient competitor data** → Report as many competitors as viable, explain gaps.
 - **Options catalog requested without booklet** → STOP, ask user to upload the policy booklet PDF.
+- **Plan architect requested but no baseline** → STOP, run the standard audit pipeline first.
